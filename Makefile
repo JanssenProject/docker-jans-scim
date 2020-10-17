@@ -1,5 +1,5 @@
-JANS_VERSION=4.2.1
-IMAGE_NAME=gluufederation/scim
+JANS_VERSION=5.0.0
+IMAGE_NAME=janssenproject/scim
 UNSTABLE_VERSION=dev
 
 build-dev:

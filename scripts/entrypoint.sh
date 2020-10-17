@@ -9,15 +9,15 @@ if [ ! -f /deploy/touched ]; then
     touch /deploy/touched
 fi
 
-cd /opt/gluu/jetty/scim
+cd /opt/jans/jetty/scim
 exec java \
     -server \
     -XX:+DisableExplicitGC \
     -XX:+UseContainerSupport \
     -XX:MaxRAMPercentage=$JANS_MAX_RAM_PERCENTAGE \
-    -Dgluu.base=/etc/gluu \
-    -Dserver.base=/opt/gluu/jetty/scim \
-    -Dlog.base=/opt/gluu/jetty/scim \
+    -Djans.base=/etc/jans \
+    -Dserver.base=/opt/jans/jetty/scim \
+    -Dlog.base=/opt/jans/jetty/scim \
     -Djava.io.tmpdir=/tmp \
     -Dpython.home=/opt/jython \
     ${JANS_JAVA_OPTIONS} \

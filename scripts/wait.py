@@ -2,10 +2,10 @@ import logging
 import logging.config
 import os
 
-from pygluu.containerlib import get_manager
-from pygluu.containerlib import wait_for
-from pygluu.containerlib.validators import validate_persistence_type
-from pygluu.containerlib.validators import validate_persistence_ldap_mapping
+from jans.pycloudlib import get_manager
+from jans.pycloudlib import wait_for
+from jans.pycloudlib.validators import validate_persistence_type
+from jans.pycloudlib.validators import validate_persistence_ldap_mapping
 
 from settings import LOGGING_CONFIG
 

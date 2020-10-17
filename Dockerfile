@@ -19,7 +19,7 @@ RUN apk update \
 
 ARG JETTY_VERSION=9.4.26.v20200117
 ARG JETTY_HOME=/opt/jetty
-ARG JETTY_BASE=/opt/gluu/jetty
+ARG JETTY_BASE=/opt/jans/jetty
 ARG JETTY_USER_HOME_LIB=/home/jetty/lib
 
 # Install jetty
@@ -37,7 +37,7 @@ EXPOSE 8080
 # ======
 
 ARG JYTHON_VERSION=2.7.2
-RUN wget -q https://ox.gluu.org/dist/jython/${JYTHON_VERSION}/jython-installer-${JYTHON_VERSION}.jar -O /tmp/jython-installer.jar \
+RUN wget -q https://repo1.maven.org/maven2/org/python/jython-installer/${JYTHON_VERSION}/jython-installer-${JYTHON_VERSION}.jar -O /tmp/jython-installer.jar \
     && mkdir -p /opt/jython \
     && java -jar /tmp/jython-installer.jar -v -s -d /opt/jython \
     && rm -f /tmp/jython-installer.jar /tmp/*.properties
@@ -46,11 +46,12 @@ RUN wget -q https://ox.gluu.org/dist/jython/${JYTHON_VERSION}/jython-installer-$
 # SCIM
 # ====
 
-ENV JANS_VERSION=4.2.1.Final
-ENV JANS_BUILD_DATE="2020-09-24 08:32"
+ENV JANS_VERSION=5.0.0-SNAPSHOT
+ENV JANS_BUILD_DATE="2020-10-14 12:11"
+ENV JANS_SOURCE_URL=https://maven.jans.io/maven/io/jans/jans-scim-server/${JANS_VERSION}/jans-scim-server-${JANS_VERSION}.war
 
 # Install SCIM
-RUN wget -q https://ox.gluu.org/maven/org/gluu/scim-server/${JANS_VERSION}/scim-server-${JANS_VERSION}.war -O /tmp/scim.war \
+RUN wget -q ${JANS_SOURCE_URL} -O /tmp/scim.war \
     && mkdir -p ${JETTY_BASE}/scim/webapps/scim \
     && unzip -qq /tmp/scim.war -d ${JETTY_BASE}/scim/webapps/scim \
     && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/scim --add-to-start=server,deploy,resources,http,http-forwarded,jsp,websocket \
@@ -64,7 +65,7 @@ RUN apk add --no-cache py3-cryptography
 COPY requirements.txt /app/requirements.txt
 RUN pip3 install -U pip wheel \
     && pip3 install --no-cache-dir -r /app/requirements.txt \
-    && rm -rf /src/pygluu-containerlib/.git
+    && rm -rf /src/jans-pycloudlib/.git
 
 # =======
 # Cleanup
@@ -94,8 +95,9 @@ ENV JANS_CONFIG_ADAPTER=consul \
     JANS_CONFIG_CONSUL_CERT_FILE=/etc/certs/consul_client.crt \
     JANS_CONFIG_CONSUL_KEY_FILE=/etc/certs/consul_client.key \
     JANS_CONFIG_CONSUL_TOKEN_FILE=/etc/certs/consul_token \
+    JANS_CONFIG_CONSUL_NAMESPACE=jans \
     JANS_CONFIG_KUBERNETES_NAMESPACE=default \
-    JANS_CONFIG_KUBERNETES_CONFIGMAP=gluu \
+    JANS_CONFIG_KUBERNETES_CONFIGMAP=jans \
     JANS_CONFIG_KUBERNETES_USE_KUBE_CONFIG=false
 
 # ==========
@@ -112,8 +114,9 @@ ENV JANS_SECRET_ADAPTER=vault \
     JANS_SECRET_VAULT_CERT_FILE=/etc/certs/vault_client.crt \
     JANS_SECRET_VAULT_KEY_FILE=/etc/certs/vault_client.key \
     JANS_SECRET_VAULT_CACERT_FILE=/etc/certs/vault_ca.crt \
+    JANS_SECRET_VAULT_NAMESPACE=jans \
     JANS_SECRET_KUBERNETES_NAMESPACE=default \
-    JANS_SECRET_KUBERNETES_SECRET=gluu \
+    JANS_SECRET_KUBERNETES_SECRET=jans \
     JANS_SECRET_KUBERNETES_USE_KUBE_CONFIG=false
 
 # ===============
@@ -126,7 +129,7 @@ ENV JANS_PERSISTENCE_TYPE=ldap \
     JANS_COUCHBASE_URL=localhost \
     JANS_COUCHBASE_USER=admin \
     JANS_COUCHBASE_CERT_FILE=/etc/certs/couchbase.crt \
-    JANS_COUCHBASE_PASSWORD_FILE=/etc/gluu/conf/couchbase_password \
+    JANS_COUCHBASE_PASSWORD_FILE=/etc/jans/conf/couchbase_password \
     JANS_COUCHBASE_CONN_TIMEOUT=10000 \
     JANS_COUCHBASE_CONN_MAX_WAIT=20000 \
     JANS_COUCHBASE_SCAN_CONSISTENCY=not_bounded
@@ -139,22 +142,23 @@ ENV JANS_MAX_RAM_PERCENTAGE=75.0 \
     JANS_WAIT_MAX_TIME=300 \
     JANS_WAIT_SLEEP_DURATION=10 \
     JANS_JAVA_OPTIONS="" \
-    GLUU_SSL_CERT_FROM_SECRETS=false
+    JANS_SSL_CERT_FROM_SECRETS=false \
+    JANS_NAMESPACE=jans
 
 # ==========
 # misc stuff
 # ==========
 
 LABEL name="SCIM" \
-    maintainer="Gluu Inc. <support@gluu.org>" \
-    vendor="Gluu Federation" \
-    version="4.2.1" \
-    release="02" \
-    summary="Gluu SCIM" \
+    maintainer="Janssen Project <support@jans.io>" \
+    vendor="Janssen Project" \
+    version="5.0.0" \
+    release="dev" \
+    summary="Janssen SCIM" \
     description="SCIM server"
 
 RUN mkdir -p /etc/certs /deploy \
-    /etc/gluu/conf \
+    /etc/jans/conf \
     /app/templates
 
 COPY jetty/*.xml ${JETTY_BASE}/scim/webapps/

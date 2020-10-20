@@ -14,11 +14,11 @@ exec java \
     -server \
     -XX:+DisableExplicitGC \
     -XX:+UseContainerSupport \
-    -XX:MaxRAMPercentage=$JANS_MAX_RAM_PERCENTAGE \
+    -XX:MaxRAMPercentage=$CLOUD_NATIVE_MAX_RAM_PERCENTAGE \
     -Djans.base=/etc/jans \
     -Dserver.base=/opt/jans/jetty/scim \
     -Dlog.base=/opt/jans/jetty/scim \
     -Djava.io.tmpdir=/tmp \
     -Dpython.home=/opt/jython \
-    ${JANS_JAVA_OPTIONS} \
+    ${CLOUD_NATIVE_JAVA_OPTIONS} \
     -jar /opt/jetty/start.jar

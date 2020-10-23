@@ -84,15 +84,15 @@ def main():
     if persistence_type == "hybrid":
         render_hybrid_properties("/etc/jans/conf/jans-hybrid.properties")
 
-    if not os.path.isfile("/etc/certs/jans_https.crt"):
+    if not os.path.isfile("/etc/certs/web_https.crt"):
         if as_boolean(os.environ.get("CN_SSL_CERT_FROM_SECRETS", False)):
-            manager.secret.to_file("ssl_cert", "/etc/certs/jans_https.crt")
+            manager.secret.to_file("ssl_cert", "/etc/certs/web_https.crt")
         else:
-            get_server_certificate(manager.config.get("hostname"), 443, "/etc/certs/jans_https.crt")
+            get_server_certificate(manager.config.get("hostname"), 443, "/etc/certs/web_https.crt")
 
     cert_to_truststore(
         "jans_https",
-        "/etc/certs/jans_https.crt",
+        "/etc/certs/web_https.crt",
         "/usr/lib/jvm/default-jvm/jre/lib/security/cacerts",
         "changeit",
     )

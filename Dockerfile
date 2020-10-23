@@ -52,9 +52,9 @@ ENV CN_SOURCE_URL=https://maven.jans.io/maven/io/jans/jans-scim-server/${CN_VERS
 
 # Install SCIM
 RUN wget -q ${CN_SOURCE_URL} -O /tmp/scim.war \
-    && mkdir -p ${JETTY_BASE}/scim/webapps/scim \
-    && unzip -qq /tmp/scim.war -d ${JETTY_BASE}/scim/webapps/scim \
-    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/scim --add-to-start=server,deploy,resources,http,http-forwarded,jsp,websocket \
+    && mkdir -p ${JETTY_BASE}/jans-scim/webapps/jans-scim \
+    && unzip -qq /tmp/scim.war -d ${JETTY_BASE}/jans-scim/webapps/jans-scim \
+    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/jans-scim --add-to-start=server,deploy,resources,http,http-forwarded,jsp,websocket \
     && rm -f /tmp/scim.war
 
 # ======
@@ -161,7 +161,7 @@ RUN mkdir -p /etc/certs /deploy \
     /etc/jans/conf \
     /app/templates
 
-COPY jetty/*.xml ${JETTY_BASE}/scim/webapps/
+COPY jetty/*.xml ${JETTY_BASE}/jans-scim/webapps/
 COPY conf/*.tmpl /app/templates/
 
 COPY scripts /app/scripts
